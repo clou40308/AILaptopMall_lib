@@ -18,13 +18,13 @@ public class member {
 
 	public String name;// required,2~20個字元
 
-	public LocalDate birthday;// required
+	public LocalDate birthday;// required,須年滿12歲
 
-	public char gender;// 性別 required,M-男,F-女,O-其他
+	public char gender;// 性別 required, M:男|F:女|O:不願透漏
 
-	public String address = "";// optional
+	public String address = "";// optional, 0-100個字元
 
-	public boolean subscribed = false;// 訂閱 optional
+	public boolean subscribed ;// 訂閱 optional
 
 	public String getAccount() {
 		return account;

@@ -5,7 +5,7 @@ import java.time.format.DateTimeParseException;
 
 import com.ailaptopmall.exception.AILMDataInvalidException;
 
-public class member {
+public class Member {
 
 	public String account;// 帳號 PKey,6~20個字元
 
@@ -27,7 +27,7 @@ public class member {
 
 	public boolean subscribed;// 訂閱 optional
 
-	public member() {
+	public Member() {
 		super();
 	}
 
@@ -330,7 +330,7 @@ public class member {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		member other = (member) obj;
+		Member other = (Member) obj;
 		if (account == null) {
 			if (other.account != null) {
 				return false;

@@ -9,7 +9,7 @@ import com.ailaptopmall.exception.AILMDataInvalidException;
 import com.ailaptopmall.exception.AILMException;
 import com.ailaptopmall.service.CustomerService;
 
-public class TestMemberService_register {
+public class TestCustomerService_register {
 
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);

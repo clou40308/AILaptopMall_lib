@@ -31,10 +31,6 @@ public class CustomersDAO {
 					){
 					//5.處理rs
 					while(rs.next()) {
-						String theAccount = rs.getString("account");
-						if(!theAccount.equals(account)) {
-							throw new LoginFailedException("登入失敗，帳號不正確");
-						}
 						int discount = rs.getInt("discount");
 						if(discount>0) { //折扣>0
 							VIP vip = new VIP();
@@ -43,7 +39,8 @@ public class CustomersDAO {
 						}else { //否則
 							c = new Customer();   //建立一般Customer物件
 						}
-						c.setAccount(rs.getString("account"));
+						String theAccount = rs.getString("account");
+						c.setAccount(theAccount);
 						c.setPassword(rs.getString("password"));
 						c.setId(rs.getString("id"));					
 						c.setEmail(rs.getString("email"));
@@ -56,7 +53,7 @@ public class CustomersDAO {
 					}
 				}
 			} catch (SQLException e) {
-				throw new AILMException("用account查詢客戶失敗", e);
+				throw new AILMException("用[帳號]查詢客戶失敗", e);
 			}		
 			return c;
 		}

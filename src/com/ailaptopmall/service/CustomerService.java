@@ -25,4 +25,10 @@ public class CustomerService {
 			throw new IllegalArgumentException("註冊會員時客戶物件不得為null");
 		dao.insert(c);
 	}
+	
+	public void update(Customer c) throws AILMException{
+		if(c== null)
+			throw new IllegalArgumentException("修改會員時客戶物件不得為null");
+		dao.update(c);		
+	}
 }

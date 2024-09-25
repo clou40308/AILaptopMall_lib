@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ailaptopmall.entity.Member;
+import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.exception.LoginFailedException;
 
 public class TestMemberLogin {
@@ -18,10 +18,10 @@ public class TestMemberLogin {
 	private static final String USER_ID = "root";
 	private static final String DB_PWD = "1234";	
 	
-	private static final String SELECT_MEMBER =
+	private static final String SELECT_CUSTOMER =
 			"SELECT account, password, id, email, phone, name, "
-			+" birthday, gender, address, subscribed, discount FROM members "
-			+" WHERE account=? ";	
+			+" birthday, gender, address, subscribed, discount FROM customers "
+			+" WHERE account=? ";		
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("請輸入帳號:");  //clou40308
@@ -32,14 +32,14 @@ public class TestMemberLogin {
 		
 		System.out.printf("輸入了帳號: %s,密碼: %s\n", account, password); 
 		scanner.close();
-		Member m = null;
+		Customer c = null;
 		
 		//JDBC
 		try {			
 			Class.forName(DRIVER); //1. 載入類別(Driver)			
 			try (
 					Connection connection = DriverManager.getConnection(URL, USER_ID, DB_PWD);//2.建立連線				
-					PreparedStatement pstmt = connection.prepareStatement(SELECT_MEMBER); //3.準備指令，可避免發生SQL Injection					
+					PreparedStatement pstmt = connection.prepareStatement(SELECT_CUSTOMER); //3.準備指令，可避免發生SQL Injection					
 				){
 				
 				pstmt.setString(1, account); //3.1傳入?的值
@@ -48,27 +48,27 @@ public class TestMemberLogin {
 						ResultSet rs = pstmt.executeQuery(); //4.執行指令		
 					){
 					while(rs.next()) { //5.讀取rs
-						m = new Member();
+						c = new Customer();
 						String theAccount = rs.getString("account");
 						if(!theAccount.equals(account)) {
 							throw new LoginFailedException("登入失敗，帳號不正確");
 						}
-						m.setAccount(rs.getString("account"));
-						m.setPassword(rs.getString("password"));
-						m.setId(rs.getString("id"));					
-						m.setEmail(rs.getString("email"));
-						m.setPhone(rs.getString("phone"));
-						m.setName(rs.getString("name"));
-						m.setBirthday(rs.getString("birthday"));					
-						m.setGender(rs.getString("gender").charAt(0));					
-						m.setAddress(rs.getString("address"));
-						m.setSubscribed(rs.getBoolean("subscribed"));						
-						System.out.println(m); //for test
+						c.setAccount(rs.getString("account"));
+						c.setPassword(rs.getString("password"));
+						c.setId(rs.getString("id"));					
+						c.setEmail(rs.getString("email"));
+						c.setPhone(rs.getString("phone"));
+						c.setName(rs.getString("name"));
+						c.setBirthday(rs.getString("birthday"));					
+						c.setGender(rs.getString("gender").charAt(0));					
+						c.setAddress(rs.getString("address"));
+						c.setSubscribed(rs.getBoolean("subscribed"));						
+						System.out.println(c); //for test
 					}
 				}
 				
-				if(m!=null && password!=null && password.equals(m.getPassword())) {
-					System.out.printf("登入成功，%s 你好!\n", m.getName());
+				if(c!=null && password!=null && password.equals(c.getPassword())) {
+					System.out.printf("登入成功，%s 你好!\n", c.getName());
 					return ;
 				}		
 			} catch (LoginFailedException e) {

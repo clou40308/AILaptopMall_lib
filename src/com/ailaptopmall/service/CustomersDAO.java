@@ -6,24 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import com.ailaptopmall.entity.Member;
+import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.entity.VIP;
 import com.ailaptopmall.exception.AILMDataInvalidException;
 import com.ailaptopmall.exception.AILMException;
 import com.ailaptopmall.exception.LoginFailedException;
 
-public class MembersDAO {
-	private static final String SELECT_MEMBER =
+public class CustomersDAO {
+	private static final String SELECT_CUSTOMER =
 			"SELECT account, password, id, email, phone, name, "
-			+" birthday, gender, address, subscribed, discount FROM members "
+			+" birthday, gender, address, subscribed, discount FROM customers "
 			+" WHERE account=? ";			
 		
-	Member selectById(String account)throws AILMException{
-		Member m = null;
+	Customer selectById(String account)throws AILMException{
+		Customer c = null;
 			
 			try (
 					Connection connection = MySQLConnection.getConnection();//1,2. 取得連線
-					PreparedStatement pstmt = connection.prepareStatement(SELECT_MEMBER); //3.準備指令			
+					PreparedStatement pstmt = connection.prepareStatement(SELECT_CUSTOMER); //3.準備指令			
 				){			
 				pstmt.setString(1, account);//3.1傳入?的值			
 				try(	
@@ -39,50 +39,50 @@ public class MembersDAO {
 						if(discount>0) { //折扣>0
 							VIP vip = new VIP();
 							vip.setDiscount(discount);
-							m = vip;
+							c = vip;
 						}else { //否則
-							m = new Member();   //建立一般Customer物件
+							c = new Customer();   //建立一般Customer物件
 						}
-						m.setAccount(rs.getString("account"));
-						m.setPassword(rs.getString("password"));
-						m.setId(rs.getString("id"));					
-						m.setEmail(rs.getString("email"));
-						m.setPhone(rs.getString("phone"));
-						m.setName(rs.getString("name"));
-						m.setBirthday(rs.getString("birthday"));					
-						m.setGender(rs.getString("gender").charAt(0));					
-						m.setAddress(rs.getString("address"));
-						m.setSubscribed(rs.getBoolean("subscribed"));								
+						c.setAccount(rs.getString("account"));
+						c.setPassword(rs.getString("password"));
+						c.setId(rs.getString("id"));					
+						c.setEmail(rs.getString("email"));
+						c.setPhone(rs.getString("phone"));
+						c.setName(rs.getString("name"));
+						c.setBirthday(rs.getString("birthday"));					
+						c.setGender(rs.getString("gender").charAt(0));					
+						c.setAddress(rs.getString("address"));
+						c.setSubscribed(rs.getBoolean("subscribed"));								
 					}
 				}
 			} catch (SQLException e) {
 				throw new AILMException("用account查詢客戶失敗", e);
 			}		
-			return m;
+			return c;
 		}
 
-		private static final String INSERT_MEMBER="INSERT INTO members "
+		private static final String INSERT_CUSTOMER="INSERT INTO customers "
 				+ " (account, password, id, email, phone, name, "
 				+ "		birthday, gender, address, subscribed) "
 				+ " VALUES(?,?,?,?,?,?,?,?, ?,?)";
-		public void insert(Member m) throws AILMException{
+		public void insert(Customer c) throws AILMException{
 			
 			try (
 					Connection connection = MySQLConnection.getConnection();//1, 2 取得連線
-					PreparedStatement pstmt = connection.prepareStatement(INSERT_MEMBER); //3.準備指令
+					PreparedStatement pstmt = connection.prepareStatement(INSERT_CUSTOMER); //3.準備指令
 				){
 				
 				//3.1 傳入?的值
-				pstmt.setString(1, m.getAccount());
-				pstmt.setString(2, m.getPassword());
-				pstmt.setString(3, m.getId());
-				pstmt.setString(4, m.getEmail());
-				pstmt.setString(5, m.getPhone());
-				pstmt.setString(6, m.getName());
-				pstmt.setString(7, String.valueOf(m.getBirthday()));
-				pstmt.setString(8, String.valueOf(m.getGender()));
-				pstmt.setString(9, m.getAddress());
-				pstmt.setBoolean(10, m.isSubscribed());
+				pstmt.setString(1, c.getAccount());
+				pstmt.setString(2, c.getPassword());
+				pstmt.setString(3, c.getId());
+				pstmt.setString(4, c.getEmail());
+				pstmt.setString(5, c.getPhone());
+				pstmt.setString(6, c.getName());
+				pstmt.setString(7, String.valueOf(c.getBirthday()));
+				pstmt.setString(8, String.valueOf(c.getGender()));
+				pstmt.setString(9, c.getAddress());
+				pstmt.setBoolean(10, c.isSubscribed());
 				
 				pstmt.executeUpdate(); //4.執行指令，SQLIntegrityConstraintViolationException
 			}catch(SQLIntegrityConstraintViolationException e) {

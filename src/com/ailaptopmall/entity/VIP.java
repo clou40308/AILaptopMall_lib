@@ -2,7 +2,7 @@ package com.ailaptopmall.entity;
 
 import com.ailaptopmall.exception.AILMDataInvalidException;
 
-public class VIP extends Member {
+public class VIP extends Customer {
 
 	private int discount = 5; // 2% ~ 15% off
 

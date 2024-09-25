@@ -4,10 +4,10 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ailaptopmall.entity.Member;
+import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.exception.AILMDataInvalidException;
 import com.ailaptopmall.exception.AILMException;
-import com.ailaptopmall.service.MemberService;
+import com.ailaptopmall.service.CustomerService;
 
 public class TestMemberService_register {
 
@@ -32,23 +32,23 @@ public class TestMemberService_register {
 		System.out.println("請輸入姓名:");// 周作軒
 		String name = scanner.next();
 
-		Member m = new Member();
+		Customer c = new Customer();
 		try {
-			m.setAccount(account);
-			m.setPassword(password);
-			m.setId(id);
-			m.setEmail(email);
-			m.setPhone(phone);
-			m.setName(name);
-			m.setBirthday("1994-03-30");
-			m.setGender(Member.MALE);
-			m.setAddress("台北市");
-			m.setSubscribed(false);
+			c.setAccount(account);
+			c.setPassword(password);
+			c.setId(id);
+			c.setEmail(email);
+			c.setPhone(phone);
+			c.setName(name);
+			c.setBirthday("1994-03-30");
+			c.setGender(Customer.MALE);
+			c.setAddress("台北市");
+			c.setSubscribed(false);
 
-			System.out.println(m);
+			System.out.println(c);
 
-			MemberService service = new MemberService();
-			service.register(m);
+			CustomerService service = new CustomerService();
+			service.register(c);
 			System.out.println("註冊成功");
 		} catch (AILMDataInvalidException e) {
 			System.err.println(e.getMessage()); // for user

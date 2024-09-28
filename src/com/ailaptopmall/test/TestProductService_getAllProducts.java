@@ -8,7 +8,7 @@ import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.exception.AILMException;
 import com.ailaptopmall.service.ProductService;
 
-public class TestProductService_getAll {
+public class TestProductService_getAllProducts {
 	public static void main(String[] args) {
 		ProductService pService = new ProductService();
 		try {

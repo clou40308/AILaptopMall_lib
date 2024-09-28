@@ -8,8 +8,7 @@ import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.exception.AILMException;
 import com.ailaptopmall.service.ProductService;
 
-
-public class TestProductService_by_keyword {
+public class TestProductService_getProductsByKeyword {
 
 	public static void main(String[] args) {
 		ProductService pService = new ProductService();

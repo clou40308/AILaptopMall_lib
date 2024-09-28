@@ -16,39 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `members`
+-- Table structure for table `products`
 --
 
-DROP TABLE IF EXISTS `members`;
+DROP TABLE IF EXISTS `products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `members` (
-  `account` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  `id` char(10) NOT NULL,
-  `email` varchar(60) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `name` varchar(20) NOT NULL,
-  `birthday` date NOT NULL,
-  `gender` char(1) NOT NULL,
-  `address` varchar(100) NOT NULL DEFAULT '',
-  `subscribed` tinyint(1) NOT NULL DEFAULT '0',
+CREATE TABLE `products` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `unit_price` double NOT NULL,
+  `stock` int NOT NULL,
+  `photo_url` varchar(300) DEFAULT NULL,
+  `category` varchar(10) NOT NULL,
+  `maker` varchar(60) NOT NULL,
+  `cpu` varchar(60) NOT NULL,
+  `description` varchar(300) NOT NULL DEFAULT '',
   `discount` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`account`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
-  UNIQUE KEY `phone_UNIQUE` (`phone`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `members`
+-- Dumping data for table `products`
 --
 
-LOCK TABLES `members` WRITE;
-/*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES ('clou40308','a123456','F128546809','clou40308@gmail.com','0922656613','周作軒','1994-03-30','M','台北市',0,0);
-/*!40000 ALTER TABLE `members` ENABLE KEYS */;
+LOCK TABLES `products` WRITE;
+/*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,'ASUS 華碩Vivobook Pro OLED 15.6吋AI輕薄筆電灰(Core Ultra 9/8G+8G/RTX4050/1TB/WIN11/N6506MU-0022G185H)',53900,15,NULL,'AI筆記型電腦','ASUS','Core Ultra 9','',0),(2,'HP 惠普Elitebook 14吋 商用AI筆電銀色(Ultra 7 155H/16GB/1TB/WIN11PRO/840 G11)',57900,12,NULL,'AI筆記型電腦','HP','Ultra 7 155H','',0);
+/*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -60,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-15  1:39:26
+-- Dump completed on 2024-09-28 16:41:29

@@ -62,7 +62,7 @@ public class CustomersDAO {
 				+ " (account, password, id, email, phone, name, "
 				+ "		birthday, gender, address, subscribed) "
 				+ " VALUES(?,?,?,?,?,?,?,?, ?,?)";
-		public void insert(Customer c) throws AILMException{
+		void insert(Customer c) throws AILMException{
 			
 			try (
 					Connection connection = MySQLConnection.getConnection();//1, 2 取得連線
@@ -107,7 +107,7 @@ public class CustomersDAO {
 				+ "SET password=?, id=?, email=?, phone=?, name=?, "
 				+ "	birthday=?, gender=?, address=?, subscribed=? "
 				+ " WHERE account=?";
-		public void update(Customer c)  throws AILMException{
+		void update(Customer c)  throws AILMException{
 			
 			try (
 					Connection connection = MySQLConnection.getConnection();//1, 2 取得連線
@@ -133,8 +133,10 @@ public class CustomersDAO {
 					column="email";
 				}else if(e.getMessage().indexOf("phone_UNIQUE")>=0) {
 					column="手機號碼";
+				}else if(e.getMessage().indexOf("id_UNIQUE")>=0) {
+					column="身分證字號";
 				}else if(e.getMessage().indexOf("PRIMARY")>=0) {
-					column="身分證號";
+						column="帳號";
 				}else {
 					throw new AILMException("修改會員失敗:" + e.getErrorCode(), e);
 				}

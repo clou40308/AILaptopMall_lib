@@ -15,7 +15,7 @@ public class TestProductService_by_keyword {
 		ProductService pService = new ProductService();
 		
 		try {
-			List<Product> list =pService.getProductsByKeyword("ASUS");
+			List<Product> list =pService.getProductsByKeyword("聯想");
 			System.out.println(list);
 		} catch (AILMException e) {
 			Logger.getLogger("").log(Level.SEVERE, e.getMessage(), e);

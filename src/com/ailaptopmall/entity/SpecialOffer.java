@@ -53,6 +53,6 @@ public class SpecialOffer extends Product{
 		return "[" + super.toString() 
 			+ "\n 折扣: " + discount + "%off 即為" + getDiscountString()
 			+ "\n 售價為: " + getUnitPrice()
-		+ "]";
+		+ "]\n";
 	}
 }

@@ -30,8 +30,8 @@ CREATE TABLE `products` (
   `photo_url` varchar(300) DEFAULT NULL,
   `category` varchar(10) NOT NULL,
   `maker` varchar(60) NOT NULL,
-  `cpu` varchar(60) NOT NULL,
   `description` varchar(300) NOT NULL DEFAULT '',
+  `release_date` date NOT NULL DEFAULT (curdate()),
   `discount` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
@@ -44,7 +44,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'ASUS 華碩Vivobook Pro OLED 15.6吋AI輕薄筆電灰(Core Ultra 9/8G+8G/RTX4050/1TB/WIN11/N6506MU-0022G185H)',53900,15,NULL,'AI筆記型電腦','ASUS','Core Ultra 9','',0),(2,'HP 惠普Elitebook 14吋 商用AI筆電銀色(Ultra 7 155H/16GB/1TB/WIN11PRO/840 G11)',57900,12,NULL,'AI筆記型電腦','HP','Ultra 7 155H','',0);
+INSERT INTO `products` VALUES (1,'LENOVO 聯想ThinkBook 商用AI筆電灰色',33990,30,'https://img.pchome.com.tw/cs/items/DHAD6GA900HHJMX/l000002_1725956652.jpg','AI筆記型電腦','LENOVO','','2024-09-28',10),(2,'HP 惠普Elitebook 14吋 商用AI筆電銀色(Ultra 7 155H/16GB/1TB/WIN11PRO/840 G11)',57900,12,NULL,'AI筆記型電腦','HP','','2024-09-28',0);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-28 16:41:29
+-- Dump completed on 2024-09-28 22:48:23

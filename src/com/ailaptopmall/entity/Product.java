@@ -1,5 +1,7 @@
 package com.ailaptopmall.entity;
 
+import java.time.LocalDate;
+
 import com.ailaptopmall.exception.AILMDataInvalidException;
 
 public class Product {
@@ -18,9 +20,9 @@ public class Product {
 
 	private String maker;// 廠牌 required
 
-	private String cpu;// required
-
 	private String description = ""; // optional, 0~250個字元
+	
+	private LocalDate releaseDate; // required
 
 	public Product() {
 
@@ -97,14 +99,6 @@ public class Product {
 		this.maker = maker;
 	}
 
-	public String getCpu() {
-		return cpu;
-	}
-
-	public void setCpu(String cpu) {
-		this.cpu = cpu;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -113,6 +107,32 @@ public class Product {
 		this.description = description;
 	}
 
+	public LocalDate getReleaseDate() {
+		return releaseDate;
+	}
+
+	/**
+	 * 屬性 releaseDate 的 setter
+	 * @param releaseDate LocalDate型別
+	 */
+	public void setReleaseDate(LocalDate releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+	
+	/**
+	 * 將符合iso-8601的日期字串轉換成LocalDate物件
+	 * 再呼叫setReleaseDate(LocalDate物件)**間接**指派給產品的releaseDate屬性
+	 * @param dateStr String型別
+	 */
+	public void setReleaseDate(String dateStr) {
+		if(dateStr!=null) {
+			LocalDate date = LocalDate.parse(dateStr);			
+			this.setReleaseDate(date);
+		}else {
+			
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return 
@@ -121,9 +141,9 @@ public class Product {
 				+ ",\n 定價=" + unitPrice + ", 庫存=" + stock + ", 分類=" + category 
 				+ ",\n 圖片=" + photoUrl 
 				+ ",\n 廠牌=" + maker
-				+ ",\n CPU=" +  cpu
 				+ ",\n 說明=" + description 
-				+ "]";
+				+ ",\n 上架時間=" + releaseDate
+				+ "]\n";
 	}
 
 	@Override

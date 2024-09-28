@@ -15,7 +15,7 @@ public class ProductsDAO {
 	
 	private static final String SELECT_ALL_PRODUCTS=
 			"SELECT id, name, unit_price, stock, photo_url, "
-			+ " category, maker, cpu, description, discount FROM products";	
+			+" category, maker, description, release_date, discount FROM products";	
 	List<Product> selectAllProducts()throws AILMException{
 		List<Product> list = new ArrayList<>();		
 		//JDBC 1~5
@@ -42,8 +42,8 @@ public class ProductsDAO {
 				p.setPhotoUrl(rs.getString("photo_url"));
 				p.setCategory(rs.getString("category"));
 				p.setMaker(rs.getString("maker"));
-				p.setCpu(rs.getString("cpu"));
 				p.setDescription(rs.getString("description"));                
+				p.setReleaseDate(rs.getString("release_date"));
 				
 				list.add(p);
 			}
@@ -83,8 +83,8 @@ public class ProductsDAO {
 					p.setPhotoUrl(rs.getString("photo_url"));
 					p.setCategory(rs.getString("category"));
 					p.setMaker(rs.getString("maker"));
-					p.setCpu(rs.getString("cpu"));
 					p.setDescription(rs.getString("description"));    
+					p.setReleaseDate(rs.getString("release_date"));
 					
 					list.add(p);
 				}

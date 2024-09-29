@@ -3,7 +3,6 @@ package com.ailaptopmall.service;
 import java.util.List;
 
 import com.ailaptopmall.entity.Product;
-import com.ailaptopmall.entity.Size;
 import com.ailaptopmall.entity.Spec;
 import com.ailaptopmall.exception.AILMDataInvalidException;
 import com.ailaptopmall.exception.AILMException;

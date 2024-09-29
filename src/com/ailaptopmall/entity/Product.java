@@ -189,6 +189,7 @@ public class Product {
 				+ ",\n 說明=" + description 
 				+ ",\n 上架時間=" + releaseDate
 				+ ",\n 螢幕尺吋清單=" + sizeList
+				+ ",\n 規格總數=" + specCount
 				+ "]\n";
 	}
 

@@ -184,17 +184,33 @@ public class ProductsDAO {
 	}
 	
 	private static final String SELECT_PRODUCT_BY_ID =
-			"SELECT id, name, unit_price, products.stock, photo_url, category, maker, description, products.release_date, discount, "
-			+ " product_id, size_name, "
+			"SELECT id, name, products.unit_price, IFNULL(SUM(product_size_specs.stock),products.stock) AS stock, "
+			+ " products.photo_url, category, maker, description, products.release_date, discount , "
+			+ " product_sizes.product_id, product_sizes.size_name, "
 			+ " IFNULL(product_sizes.release_date,products.release_date) AS size_release_date, "
-			+ " product_sizes.stock AS size_stock "
-			+ "	FROM products "
-			+ "	LEFT JOIN product_sizes ON products.id=product_sizes.product_id"
-			+ "	WHERE id=? ORDER BY product_sizes.ordinal";
+			+ " IFNULL(SUM(product_size_specs.stock),product_sizes.stock) AS size_stock, product_sizes.ordinal, "
+			+ " COUNT(spec_name) AS spec_count "
+			+ " FROM products "
+			+ " LEFT JOIN product_sizes ON products.id=product_sizes.product_id "
+			+ " LEFT JOIN product_size_specs ON products.id = product_size_specs.product_id "
+			+ "	AND (product_sizes.size_name= product_size_specs.size_name "
+			+ " OR product_sizes.size_name IS NULL) "
+			+ "	WHERE products.id=? "
+			+ "	GROUP BY products.id,product_sizes.size_name ";
+	
+	
+//			"SELECT id, name, unit_price, products.stock, photo_url, category, maker, description, products.release_date, discount, "
+//			+ " product_id, size_name, "
+//			+ " IFNULL(product_sizes.release_date,products.release_date) AS size_release_date, "
+//			+ " product_sizes.stock AS size_stock "
+//			+ "	FROM products "
+//			+ "	LEFT JOIN product_sizes ON products.id=product_sizes.product_id"
+//			+ "	WHERE id=? ORDER BY product_sizes.ordinal";
 
 //					"SELECT id, name, unit_price, stock, photo_url, "
 //					+" category, maker, description, release_date, discount FROM products "
 //					+" WHERE id=? ";
+	
 	Product selectProductById(String id) throws AILMException{
 		Product p = null;
 		try (
@@ -227,6 +243,7 @@ public class ProductsDAO {
 						p.setMaker(rs.getString("maker"));
 						p.setDescription(rs.getString("description"));    
 						p.setReleaseDate(rs.getString("release_date"));
+						p.setSpecCount(rs.getInt("spec_count"));
 					}
 						//讀取size資料
 						String sizeName = rs.getString("size_name");//size_name為PKEY

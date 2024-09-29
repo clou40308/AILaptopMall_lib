@@ -1,6 +1,8 @@
 package com.ailaptopmall.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ailaptopmall.exception.AILMDataInvalidException;
 
@@ -23,7 +25,50 @@ public class Product {
 	private String description = ""; // optional, 0~250個字元
 	
 	private LocalDate releaseDate; // required
+	
+	private int specCount;
+	
+	public int getSpecCount() {
+		return specCount;
+	}
 
+	public void setSpecCount(int specCount) {
+		this.specCount = specCount;
+	}
+
+	//螢幕尺吋清單
+	private List<Size> sizeList = new ArrayList<>();
+	
+	public List<Size> getSizeList() {
+		//return sizeList; //不應直接回傳正本
+		return new ArrayList<>(sizeList); //應return複本
+		//return Collections.unmodifiableList(sizeList); //或return不可變更的正本
+	}
+
+	//取代集合屬性的setter: add, (update, remove用不到)
+	public void add(Size size) {
+		sizeList.add(size);
+	}	
+	
+	public Size findSize(String sizeName) {
+		Size theSize = null;
+		if(sizeList.size()>0 && sizeName!=null) {	
+			for(int i=0;i<sizeList.size();i++) {
+				Size size = sizeList.get(i);
+				if(size!=null && size.getSizeName().equals(sizeName)) {
+					theSize = size;
+					break;
+				}
+			}
+		}
+		return theSize;
+	}
+	
+	//集合屬性不可直接set
+//	public void setColorsList(List<Size> sizeList) {
+//		this.sizeList = sizeList;
+//	}
+	
 	public Product() {
 
 	}
@@ -143,6 +188,7 @@ public class Product {
 				+ ",\n 廠牌=" + maker
 				+ ",\n 說明=" + description 
 				+ ",\n 上架時間=" + releaseDate
+				+ ",\n 螢幕尺吋清單=" + sizeList
 				+ "]\n";
 	}
 

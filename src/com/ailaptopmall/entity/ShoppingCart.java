@@ -99,7 +99,7 @@ public class ShoppingCart {
 		for(CartItem item:keySet) {
 			sum = sum + getAmount(item);
 		}		
-		return (sum); //回傳前用Math.round(sum)、Math.floor(sum)、Math.ceil(sum)來處理小數資料
+		return Math.round(sum); //回傳前用Math.round(sum)、Math.floor(sum)、Math.ceil(sum)來處理小數資料
 	}
 	
 	@Override

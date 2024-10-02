@@ -24,4 +24,9 @@ public enum PaymentType {
 	public double getFee() {
 		return fee;
 	}
+	
+	@Override
+	public String toString() {
+		return this.description + (this.fee>0?"," + this.fee + "元":"");
+	}
 }

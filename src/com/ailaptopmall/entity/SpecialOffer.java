@@ -37,7 +37,7 @@ public class SpecialOffer extends Product{
 	@Override
 	public double getUnitPrice() {
 		double rtn = super.getUnitPrice() * (100-discount)/100; 
-		return rtn;
+		return Math.round(rtn);
 	}
 	
 	/**

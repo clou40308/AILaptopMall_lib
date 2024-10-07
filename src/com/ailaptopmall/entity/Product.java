@@ -100,7 +100,7 @@ public class Product {
 	 * @return double型別的定價(即為售價)
 	 */
 	public double getUnitPrice() {
-		return unitPrice;
+		return Math.round(unitPrice);
 	}
 
 	/**

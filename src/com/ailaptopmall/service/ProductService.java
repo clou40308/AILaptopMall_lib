@@ -75,4 +75,9 @@ public class ProductService {
 		}
 		return theSpec;
 	}
+	
+	//取5個亂數的產品
+	public List<Product> getRandomProducts() throws AILMException {
+		return dao.selectRandomProducts();
+	}
 }

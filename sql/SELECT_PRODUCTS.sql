@@ -12,3 +12,9 @@ SELECT id, name, unit_price, stock, photo_url, category, maker, description, rel
 
 /*SELECT_PRODUCT_BY_ID*/
 SELECT id, name, unit_price, stock, photo_url, category, maker, description, release_date, discount FROM products WHERE id="2";
+
+/*SELECT_RANDOM_PRODUCTS*/
+SELECT id, name, unit_price, stock, photo_url, category, maker, description, release_date, discount 
+	 FROM products 
+	 ORDER BY RAND() 
+	 LIMIT 5 ;

@@ -305,5 +305,48 @@ public class ProductsDAO {
 		}		
 		return list;		
 	}
+
+	//取5個亂數id的產品
+	private static final String SELECT_RANDOM_PRODUCTS =
+			"SELECT id, name, unit_price, stock, photo_url, category, maker, description, release_date, discount "
+			+ " FROM products "
+			+ " ORDER BY RAND() "
+			+ " LIMIT 6 ";
+	List<Product> selectRandomProducts()  throws AILMException {
+		List<Product> list = new ArrayList<>();		
+		//JDBC 1~5
+		try (
+				Connection connection = MySQLConnection.getConnection(); //1,2 取得連線
+				PreparedStatement pstmt = connection.prepareStatement(SELECT_RANDOM_PRODUCTS); //3.準備指令						
+				ResultSet rs = pstmt.executeQuery(); //4.執行指令
+			){
+			while(rs.next()) { //5.處理rs
+				Product p; //可能是Product物件或SpecialOffer物件
+				
+				int discount = rs.getInt("discount");
+				if(discount > 0) {
+					p = new SpecialOffer();
+					((SpecialOffer)p).setDiscount(discount);
+				}else {
+					p = new Product();
+				}
+				
+				p.setId(rs.getInt("id"));
+				p.setName(rs.getString("name"));
+				p.setUnitPrice(rs.getDouble("unit_price"));
+				p.setStock(rs.getInt("stock"));
+				p.setPhotoUrl(rs.getString("photo_url"));
+				p.setCategory(rs.getString("category"));
+				p.setMaker(rs.getString("maker"));
+				p.setDescription(rs.getString("description"));                
+				p.setReleaseDate(rs.getString("release_date"));
+				
+				list.add(p);
+			}
+		} catch (SQLException e) {
+			throw new AILMException("[查詢5個亂數產品失敗]失敗", e);
+		}
+		return list;	
+	}
 	
 }

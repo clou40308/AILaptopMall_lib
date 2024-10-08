@@ -34,7 +34,7 @@ public class OrdersDAO {
 			//新增訂單
 				//3.1 傳入pstmt1的?的值
 				pstmt1.setInt(1, order.getId());
-				pstmt1.setString(2, order.getMember().getId());
+				pstmt1.setString(2, order.getMember().getAccount());
 				pstmt1.setString(3, order.getCreatedDate().toString());
 				pstmt1.setString(4, order.getCreatedTime().toString());
 				

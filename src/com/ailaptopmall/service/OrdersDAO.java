@@ -14,6 +14,7 @@ import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.entity.Order;
 import com.ailaptopmall.entity.OrderItem;
 import com.ailaptopmall.entity.PaymentType;
+import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.entity.ShippingType;
 import com.ailaptopmall.exception.AILMException;
 
@@ -143,5 +144,81 @@ public class OrdersDAO {
 		}
 		return list;
 	}
-
+	
+	private static final String SELECT_ORDER_BY_ID=
+			"SELECT  orders.id, customer_account, created_date, careted_time, status,  "
+			+ "	shipping_type, shipping_fee, shipping_note, payment_type, payment_fee, payment_note,  "
+			+ " recipient_name, recipient_email, recipient_phone, shipping_address, "
+			+ " order_id, order_items.product_id, order_items.size_name, order_items.spec_name, price, quantity, "
+			+ " products.name, IFNULL(product_size_specs.photo_url,products.photo_url) AS photo_url "
+			+ " FROM orders "
+			+ "	INNER JOIN order_items  "
+			+ "	ON orders.id = order_items.order_id "
+			+ "	INNER JOIN products "
+			+ "	ON order_items.product_id = products.id "
+			+ "	LEFT JOIN product_sizes "
+			+ "	ON order_items.product_id = product_sizes.product_id "
+			+ "	AND order_items.size_name = product_sizes.size_name "
+			+ "	LEFT JOIN product_size_specs "
+			+ "	ON order_items.product_id = product_size_specs.product_id "
+			+ "	AND order_items.size_name = product_size_specs.size_name "
+			+ " AND order_items.spec_name = product_size_specs.spec_name "
+			+ "	WHERE customer_account =? AND orders.id= ?";
+	Order selectOrderById(String account, String orderId) throws AILMException{
+		Order order = null;
+		try (
+				Connection connection = MySQLConnection.getConnection();//1,2取得連線
+				PreparedStatement pstmt = connection.prepareStatement(SELECT_ORDER_BY_ID);//3.準備指令
+			){
+			//3.1 傳入?的值
+			pstmt.setString(1, account);
+			pstmt.setString(2, orderId);
+			try(
+					ResultSet rs = pstmt.executeQuery(); //4.執行指令
+				){
+					while(rs.next()) { //5.處理rs
+						order = new Order(); 
+						order.setId(rs.getInt("orders.id"));
+						Customer member = new Customer();
+						member.setAccount(rs.getString("customer_account"));
+						order.setMember(member);
+						order.setCreatedDate(LocalDate.parse(rs.getString("created_date")));
+						order.setCreatedTime(LocalTime.parse(rs.getString("careted_time")));
+						order.setStatus(rs.getInt("status"));
+						
+						order.setShippingType(ShippingType.valueOf(rs.getString("shipping_type")));
+						order.setShippingFee(rs.getDouble("shipping_fee"));
+						order.setShippingNote(rs.getString("shipping_note"));
+						order.setPaymentType(PaymentType.valueOf(rs.getString("payment_type")));
+						order.setPaymentFee(rs.getDouble("payment_fee"));
+						order.setPaymentNote(rs.getString("payment_note"));
+						
+						order.setRecipientName(rs.getString("recipient_name"));
+						order.setRecipientEmail(rs.getString("recipient_email"));
+						order.setRecipientPhone(rs.getString("recipient_phone"));
+						order.setShippingAddress(rs.getString("shipping_address"));
+						
+						
+						Product p =new Product();
+						for(OrderItem item:order.getOrderItemsSet()) {
+							
+							item.setOrderId(rs.getInt("order_id"));
+							p.setId(rs.getInt("order_items.product_id"));
+							item.setProduct(p);
+							item.setSizeName(rs.getString("order_items.size_name"));
+							item.setSpecName(rs.getString("order_items.spec_name"));
+							item.setPrice(rs.getDouble("price"));
+							item.setQuantity(rs.getInt("quantity"));
+						}
+						p.setName(rs.getString("products.name"));
+						p.setPhotoUrl(rs.getString("photo_url"));
+						
+						
+					}
+				 }
+		} catch (SQLException e) {		
+			throw new AILMException("查詢歷史訂單失敗", e);
+		}
+		return order;
+	}
 }

@@ -311,7 +311,7 @@ public class ProductsDAO {
 			"SELECT id, name, unit_price, stock, photo_url, category, maker, description, release_date, discount "
 			+ " FROM products "
 			+ " ORDER BY RAND() "
-			+ " LIMIT 6 ";
+			+ " LIMIT 5 ";
 	List<Product> selectRandomProducts()  throws AILMException {
 		List<Product> list = new ArrayList<>();		
 		//JDBC 1~5

@@ -5,9 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.entity.Order;
 import com.ailaptopmall.entity.OrderItem;
+import com.ailaptopmall.entity.PaymentType;
+import com.ailaptopmall.entity.ShippingType;
 import com.ailaptopmall.exception.AILMException;
 
 public class OrdersDAO {
@@ -86,4 +93,55 @@ public class OrdersDAO {
 			throw new AILMException("建立訂單失敗!", e);
 		}
 	}
+	
+	private static final String SELECT_ORDERS_HISTORY =
+			"SELECT id, customer_account, created_date, careted_time, status, "
+			+ "	shipping_type, shipping_fee, payment_type, payment_fee, "
+			+ " order_id, "
+			+ " SUM(price * quantity) AS total_amount "
+			+ " FROM orders "
+			+ "	INNER JOIN order_items "
+			+ "	ON orders.id = order_items.order_id "
+			+ "	WHERE customer_account =? "
+			+ " AND created_date BETWEEN date_add(curdate(), INTERVAL -1 MONTH) AND curdate() "
+			+ " GROUP BY orders.id "
+			+ " ORDER BY created_date DESC, careted_time DESC ";
+	List<Order> selectOrdersHistory(String customerAccount) throws AILMException{
+		List<Order>list = new ArrayList<>();
+		
+		try (
+				Connection connection = MySQLConnection.getConnection(); //1,2 取得連線
+				PreparedStatement pstmt = connection.prepareStatement(SELECT_ORDERS_HISTORY);//3.準備指令		
+			){
+			//3.1 傳入?的值
+			pstmt.setString(1, customerAccount);
+			try(
+					ResultSet rs = pstmt.executeQuery(); //4.執行指令
+				){
+					while(rs.next()) { //5.處理rs
+						Order order = new Order();
+						order.setId(rs.getInt("id"));
+						
+						Customer member = new Customer();
+						member.setAccount(rs.getString("customer_account"));
+						order.setMember(member);
+						
+						order.setCreatedDate(LocalDate.parse(rs.getString("created_date")));
+						order.setCreatedTime(LocalTime.parse(rs.getString("careted_time")));
+						order.setStatus(rs.getInt("status"));
+						order.setShippingType(ShippingType.valueOf(rs.getString("shipping_type")));
+						order.setShippingFee(rs.getDouble("shipping_fee"));
+						order.setPaymentType(PaymentType.valueOf(rs.getString("payment_type")));
+						order.setPaymentFee(rs.getDouble("payment_fee"));
+						order.setTotalAmount(rs.getDouble("total_amount"));
+						
+						list.add(order);
+					} 
+				}
+		} catch (SQLException e) {
+			throw new AILMException("查詢歷史訂單失敗!", e);
+		}
+		return list;
+	}
+
 }

@@ -48,14 +48,22 @@ public class Order {//網路交易憑證
 		return sum;
 	}
 	
+	private double totalAmount; //紀錄來自SQL加總的總金額
+	
+	public void setTotalAmount(double totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+	
 	public double getTotalAmount() { //總金額
 		double sum = 0;
 		if(orderItemsSet!=null && orderItemsSet.size()>0) {
 			for(OrderItem orderItem:orderItemsSet) {
 				sum = sum + orderItem.getAmount();
 			}		
+		}else {
+			return totalAmount;
 		}
-		return (sum); //用跟購物車getTotalAmount()一樣的Math.round或ceil或floor
+		return Math.round(sum); //用跟購物車getTotalAmount()一樣的Math.round或ceil或floor
 	}
 	
 //	public double MAX_WITHOUT_FEE = 2000;

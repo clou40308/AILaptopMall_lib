@@ -80,4 +80,13 @@ public class ProductService {
 	public List<Product> getRandomProducts() throws AILMException {
 		return dao.selectRandomProducts();
 	}
+	
+	//TODO:提供[即時庫存查詢的]商業邏輯 
+	public int getStockByProductIdSizeNameSpecName(int productId, String sizeName, String specName) throws AILMException {
+	       if(productId<=0) throw new IllegalArgumentException("查詢庫存必須有productId");
+	       if(sizeName==null) sizeName = "";
+	       if(specName==null) specName = "";
+
+	       return dao.selectStockByProductIdSizeNameSpecName(productId, sizeName, specName);
+	 }	
 }

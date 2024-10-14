@@ -5,6 +5,23 @@ public class CartItem {
 	private Size theSize; // PKey
 	private Spec theSpec; // PKey
 
+	//TODO:紀錄即時庫存查詢的stock值
+    /**
+     * 為紀錄即時庫存加入的方法
+     * @param stock
+     */
+    public void setStock(int stock) {
+       if(theSpec!=null ) {
+    	   theSpec.setStock(stock); return;
+       }    
+
+       if(theSize!=null ) {
+    	   theSize.setStock(stock); return;
+       }     
+
+       theProduct.setStock(stock);
+    }
+    
 	public Product getTheProduct() {
 		return theProduct;
 	}

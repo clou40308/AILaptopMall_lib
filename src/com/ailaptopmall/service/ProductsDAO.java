@@ -12,6 +12,7 @@ import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.entity.Size;
 import com.ailaptopmall.entity.Spec;
 import com.ailaptopmall.entity.SpecialOffer;
+import com.ailaptopmall.exception.AILMDataInvalidException;
 import com.ailaptopmall.exception.AILMException;
 
 public class ProductsDAO {
@@ -184,7 +185,7 @@ public class ProductsDAO {
 	}
 	
 	private static final String SELECT_PRODUCT_BY_ID =
-			"SELECT id, name, products.unit_price, products.stock AS stock, "
+			"SELECT id, name, products.unit_price,  products.stock AS stock, "
 			+ " products.photo_url, category, maker, description, products.release_date, discount , "
 			+ " product_sizes.product_id, product_sizes.size_name, "
 			+ " IFNULL(product_sizes.release_date,products.release_date) AS size_release_date, "
@@ -347,6 +348,44 @@ public class ProductsDAO {
 			throw new AILMException("[查詢5個亂數產品失敗]失敗", e);
 		}
 		return list;	
+	}
+	
+	//TODO: 用JDBC完成即時庫存查詢的資料庫查詢
+	private static final String SELECT_STOCK_BY_PRODUCTID_SIZENAME_SPECNAME="SELECT id,name, "
+			+ " IFNULL(product_size_specs.size_name, IFNULL(product_sizes.size_name,'')) as size_name, "
+			+ "	IFNULL(product_size_specs.spec_name,'') as spec_name, "
+			+ "	IFNULL(product_size_specs.stock, IFNULL(product_sizes.stock, products.stock)) as stock "
+			+ "	FROM products "
+			+ "	LEFT JOIN product_sizes ON products.id=product_sizes.product_id "
+			+ "	LEFT JOIN product_size_specs ON products.id=product_size_specs.product_id "
+			+ "	AND(product_sizes.size_name = product_size_specs.size_name OR product_sizes.size_name IS NULL) "
+			+ "	WHERE products.id =? "
+			+ "	HAVING size_name=? AND spec_name=? ";
+	int selectStockByProductIdSizeNameSpecName(int productId, String sizeName, String specName)  throws AILMException {
+	       Integer stock=null;
+	       try (           
+	              Connection connection = MySQLConnection.getConnection(); //1,2. 取得連線
+	              PreparedStatement pstmt = connection.prepareStatement(SELECT_STOCK_BY_PRODUCTID_SIZENAME_SPECNAME); //3.準備指令
+	           ){
+	           //3.1 傳入?的值
+	           pstmt.setInt(1, productId);
+	           pstmt.setString(2, sizeName==null?"":sizeName);
+	           pstmt.setString(3, specName==null?"":specName);
+
+	           try(ResultSet rs = pstmt.executeQuery()){
+	              while (rs.next()) {
+	                  stock = rs.getInt("stock");
+	              }
+	           }
+	           if(stock==null) {
+	        	   String errMsg = String.format("查無指定產品[%s-%s-%s]的即時庫存!", productId, sizeName, specName);
+	        	   throw new AILMDataInvalidException(errMsg);
+	           }
+	       } catch (SQLException e) {
+	    	   String errMsg = String.format("查詢指定產品[%s-%s-%s]即時庫存失敗!", productId, sizeName, specName);
+	           throw new AILMException(errMsg, e);
+	       }
+	       return stock;
 	}
 	
 }

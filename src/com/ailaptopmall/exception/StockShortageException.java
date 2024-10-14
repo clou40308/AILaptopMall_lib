@@ -4,10 +4,10 @@ import com.ailaptopmall.entity.OrderItem;
 
 public class StockShortageException extends AILMException {
 	private final OrderItem item;
-	private static final String errMsg ="庫存不足";
+	private static final String errorMsg ="庫存不足";
 	
 	public StockShortageException(OrderItem item) {
-		super(errMsg);
+		super(errorMsg);
 		this.item = item;
 	}
 
@@ -18,7 +18,7 @@ public class StockShortageException extends AILMException {
 
 	@Override
 	public String toString() {
-		String msg = String.format("[%s-%s-%s]%s庫存不足", 
+		String msg = String.format("[%s-%s-%s]%s", 
 				item.getProductId(),item.getSizeName(),item.getSpecName(),this.getMessage());
 		return msg;
 	}

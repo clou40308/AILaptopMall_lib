@@ -41,9 +41,9 @@ public class OrdersDAO {
 		try (
 			Connection connection = MySQLConnection.getConnection();	//1,2. 取得連線
 			
-			PreparedStatement pstmt01 = connection.prepareStatement(UPDATE_PRODUCTS_STOCK);
-			PreparedStatement pstmt02 = connection.prepareStatement(UPDATE_PRODUCT_SIZES_STOCK);
-			PreparedStatement pstmt03 = connection.prepareStatement(UPDATE_PRODUCT_SIZE_SPECS_STOCK);
+			PreparedStatement pstmt01 = connection.prepareStatement(UPDATE_PRODUCTS_STOCK);				//3.準備指令pstmt01
+			PreparedStatement pstmt02 = connection.prepareStatement(UPDATE_PRODUCT_SIZES_STOCK);		//3.準備指令pstmt02
+			PreparedStatement pstmt03 = connection.prepareStatement(UPDATE_PRODUCT_SIZE_SPECS_STOCK);	//3.準備指令pstmt03
 			
 			PreparedStatement pstmt1 = connection.prepareStatement(INSERT_ORDERS,
 									Statement.RETURN_GENERATED_KEYS);	//3.準備指令pstmt1
@@ -53,8 +53,8 @@ public class OrdersDAO {
 			try {
 			//修改庫存
 					for(OrderItem item: order.getOrderItemsSet()) {
-						PreparedStatement pstmt;//根據明細準備指令
-						if(item.getSpecName()!=null && item.getSpecName().length()>0) {
+						PreparedStatement pstmt;									
+						if(item.getSpecName()!=null && item.getSpecName().length()>0) {//根據明細準備指令
 							pstmt = pstmt03;
 							pstmt.setString(4, item.getSizeName());
 							pstmt.setString(5, item.getSpecName());
@@ -97,7 +97,7 @@ public class OrdersDAO {
 				//4. 執行指令pstmt1
 				pstmt1.executeUpdate();
 				
-				//5.處理rs(取得AI的Key)
+				//5.處理rs(取得自動給號(AI)的Key)
 				try(ResultSet rs = pstmt1.getGeneratedKeys();){
 					while(rs.next()) {
 						order.setId(rs.getInt(1));
@@ -214,47 +214,54 @@ public class OrdersDAO {
 					ResultSet rs = pstmt.executeQuery(); //4.執行指令
 				){
 					while(rs.next()) { //5.處理rs
-						order = new Order(); 
-						order.setId(rs.getInt("orders.id"));
-						Customer member = new Customer();
-						member.setAccount(rs.getString("customer_account"));
-						order.setMember(member);
-						order.setCreatedDate(LocalDate.parse(rs.getString("created_date")));
-						order.setCreatedTime(LocalTime.parse(rs.getString("careted_time")));
-						order.setStatus(rs.getInt("status"));
-						
-						order.setShippingType(ShippingType.valueOf(rs.getString("shipping_type")));
-						order.setShippingFee(rs.getDouble("shipping_fee"));
-						order.setShippingNote(rs.getString("shipping_note"));
-						order.setPaymentType(PaymentType.valueOf(rs.getString("payment_type")));
-						order.setPaymentFee(rs.getDouble("payment_fee"));
-						order.setPaymentNote(rs.getString("payment_note"));
-						
-						order.setRecipientName(rs.getString("recipient_name"));
-						order.setRecipientEmail(rs.getString("recipient_email"));
-						order.setRecipientPhone(rs.getString("recipient_phone"));
-						order.setShippingAddress(rs.getString("shipping_address"));
-						
-						
-						Product p =new Product();
-						for(OrderItem item:order.getOrderItemsSet()) {
+						if(order==null) {						
+							order = new Order();
+							order.setId(rs.getInt("id"));
 							
-							item.setOrderId(rs.getInt("order_id"));
-							p.setId(rs.getInt("order_items.product_id"));
-							item.setProduct(p);
-							item.setSizeName(rs.getString("order_items.size_name"));
-							item.setSpecName(rs.getString("order_items.spec_name"));
-							item.setPrice(rs.getDouble("price"));
-							item.setQuantity(rs.getInt("quantity"));
+							Customer member = new Customer();
+							member.setAccount(rs.getString("customer_account"));
+							order.setMember(member);
+		
+							order.setCreatedDate(LocalDate.parse(rs.getString("created_date")));
+							order.setCreatedTime(LocalTime.parse(rs.getString("careted_time")));
+							order.setStatus(rs.getInt("status"));
+							
+							order.setShippingType(ShippingType.valueOf(rs.getString("shipping_type")));
+							order.setShippingFee(rs.getDouble("shipping_fee"));
+							order.setShippingNote(rs.getString("shipping_note"));
+							
+							order.setPaymentType(PaymentType.valueOf(rs.getString("payment_type")));
+							order.setPaymentFee(rs.getDouble("payment_fee"));
+							order.setPaymentNote(rs.getString("payment_note"));
+							
+							order.setRecipientName(rs.getString("recipient_name"));
+							order.setRecipientEmail(rs.getString("recipient_email"));
+							order.setRecipientPhone(rs.getString("recipient_phone"));
+							order.setShippingAddress(rs.getString("shipping_address"));
 						}
-						p.setName(rs.getString("products.name"));
+						
+						//讀取明細
+						OrderItem item = new OrderItem();
+						item.setOrderId(order.getId());
+						
+						Product p = new Product();
+						p.setId(rs.getInt("product_id"));
+						p.setName(rs.getString("name"));
 						p.setPhotoUrl(rs.getString("photo_url"));
+						item.setProduct(p);
+						
+						item.setSizeName(rs.getString("size_name"));
+						item.setSpecName(rs.getString("spec_name"));
+						item.setPrice(rs.getDouble("price"));
+						item.setQuantity(rs.getInt("quantity"));
+						
+						order.add(item);
 						
 						
 					}
 				 }
 		} catch (SQLException e) {		
-			throw new AILMException("查詢歷史訂單失敗", e);
+			throw new AILMException("查詢指定的訂單失敗", e);
 		}
 		return order;
 	}

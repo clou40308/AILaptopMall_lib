@@ -17,8 +17,15 @@ import com.ailaptopmall.entity.PaymentType;
 import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.entity.ShippingType;
 import com.ailaptopmall.exception.AILMException;
+import com.ailaptopmall.exception.StockShortageException;
 
 public class OrdersDAO {
+	private static final String UPDATE_PRODUCTS_STOCK = 
+			"UPDATE products SET stock=stock-? WHERE stock >=? AND id =?";
+	private static final String UPDATE_PRODUCT_SIZES_STOCK = 
+			"UPDATE product_sizes SET stock=stock-? WHERE stock >=? AND product_id =? AND size_name=?";
+	private static final String UPDATE_PRODUCT_SIZE_SPECS_STOCK = 
+			"UPDATE product_size_specs SET stock=stock-? WHERE stock >=? AND product_id =? AND size_name=? AND spec_name=?";
 	private static final String INSERT_ORDERS = 
 			"INSERT INTO orders(id, customer_account, created_date, careted_time, "
 			+ "	shipping_type, shipping_fee, payment_type, payment_fee, "
@@ -33,12 +40,42 @@ public class OrdersDAO {
 	void insert(Order order) throws AILMException {
 		try (
 			Connection connection = MySQLConnection.getConnection();	//1,2. 取得連線
+			
+			PreparedStatement pstmt01 = connection.prepareStatement(UPDATE_PRODUCTS_STOCK);
+			PreparedStatement pstmt02 = connection.prepareStatement(UPDATE_PRODUCT_SIZES_STOCK);
+			PreparedStatement pstmt03 = connection.prepareStatement(UPDATE_PRODUCT_SIZE_SPECS_STOCK);
+			
 			PreparedStatement pstmt1 = connection.prepareStatement(INSERT_ORDERS,
 									Statement.RETURN_GENERATED_KEYS);	//3.準備指令pstmt1
-			PreparedStatement pstmt2 = connection.prepareStatement(INSERT_ORDER_ITEMS)//3.準備指令pstmt2
+			PreparedStatement pstmt2 = connection.prepareStatement(INSERT_ORDER_ITEMS);//3.準備指令pstmt2
 		){		
 			connection.setAutoCommit(false);	//關閉[交易自動確認]，類似connection.beginTransaction()
 			try {
+			//修改庫存
+					for(OrderItem item: order.getOrderItemsSet()) {
+						PreparedStatement pstmt;//根據明細準備指令
+						if(item.getSpecName()!=null && item.getSpecName().length()>0) {
+							pstmt = pstmt03;
+							pstmt.setString(4, item.getSizeName());
+							pstmt.setString(5, item.getSpecName());
+						}else if(item.getSizeName()!=null && item.getSizeName().length()>0 ) {
+							pstmt = pstmt02;
+							pstmt.setString(4, item.getSizeName());
+						}else {
+							pstmt = pstmt01;
+						}
+						
+						//3.1 傳入前3個?的值
+						pstmt.setInt(1, item.getQuantity());//用購買數量來修改庫存
+						pstmt.setInt(2, item.getQuantity());//用購買數量來檢查庫存是否足夠
+						pstmt.setInt(3, item.getProductId());
+						
+						//4. 執行指令
+						int rows = pstmt.executeUpdate();
+						if(rows == 0) {
+							throw new StockShortageException(item);//自訂錯誤類別
+						}
+					}
 			//新增訂單
 				//3.1 傳入pstmt1的?的值
 				pstmt1.setInt(1, order.getId());

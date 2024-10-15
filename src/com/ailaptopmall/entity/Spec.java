@@ -58,7 +58,7 @@ public class Spec {
 	}
 
 	public double getPrice() {
-		return price;
+		return Math.round(price);
 	}
 
 	public void setPrice(double price) {

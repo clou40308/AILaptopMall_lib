@@ -13,6 +13,7 @@ import java.util.List;
 import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.entity.Order;
 import com.ailaptopmall.entity.OrderItem;
+import com.ailaptopmall.entity.OrderStatusLog;
 import com.ailaptopmall.entity.PaymentType;
 import com.ailaptopmall.entity.Product;
 import com.ailaptopmall.entity.ShippingType;
@@ -285,6 +286,35 @@ public class OrdersDAO {
 			pstmt.executeUpdate();
 		} catch (SQLException ex) {
 			throw new AILMException("[通知轉帳]失敗!", ex);
+		}
+	}
+	
+	private static final String SELECT_ORDER_STATUS_LOG = "SELECT order_id, update_time, old_status, new_status "
+			+ " FROM order_logs WHERE order_id=?";
+
+	List<OrderStatusLog> selectOrderStatusLog(String orderId) throws AILMException {
+		List<OrderStatusLog> list = new ArrayList<>();
+		try (Connection connection = MySQLConnection.getConnection();
+				PreparedStatement pstmt = connection.prepareStatement(SELECT_ORDER_STATUS_LOG);
+		) {
+			// 3.1 傳入?的值
+			pstmt.setString(1, orderId);
+
+			// 4. 執行指令
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					OrderStatusLog log = new OrderStatusLog(); // 記得要import OrderStatusLog
+					log.setId(rs.getInt("order_id"));
+					log.setOldStatus(rs.getInt("old_status"));
+					log.setStatus(rs.getInt("new_status"));
+					log.setLogTime(rs.getString("update_time"));
+					list.add(log);
+				}
+			}
+
+			return list;
+		} catch (SQLException ex) {
+			throw new AILMException("查詢訂單狀態Log失敗", ex);
 		}
 	}
 }

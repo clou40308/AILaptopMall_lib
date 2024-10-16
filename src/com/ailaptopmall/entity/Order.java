@@ -134,7 +134,25 @@ public class Order {//網路交易憑證
 	public int getStatus() {
 		return status;
 	}
+	
+	// TODO:將status數字轉為對應的中文
+	public String getStatusDescription() {
+		return getStatusDescription(this.status);
+	}
 
+	/**
+	 * 	將指定的status數字轉為對應的中文
+	 * @param status
+	 * @return status數字轉為對應的中文
+	 */
+	public String getStatusDescription(int status) {
+		if (status >= 0 && status < Status.values().length) {
+			return Status.values()[status].description;
+		} else {
+			return String.valueOf(status);
+		}
+	}
+	
 	public void setStatus(int status) {
 		this.status = status;
 	}
@@ -231,5 +249,19 @@ public class Order {//網路交易憑證
 			+ ",\n訂單明細=" + orderItemsSet 
 			+ ",\n共" + size() + "項, " + getTotalQuantity() + "件,"
 			+ "\n 總金額=" + getTotalAmount() + "元, 總金額(含手續費)" + getTotalAmountWithFee() + "元]";
+	}
+	
+	private enum Status {
+		NEW("新訂單"), TRANSFORED("已轉帳"), PAID("已付款"), SHIPPED("已出貨"), ARRIVED("已到店"), SIGNED("已簽收"), COMPLETED("已完成");
+
+		private final String description;
+
+		private Status(String description) {
+			this.description = description;
+		}
+
+		private String getDescription() {
+			return description;
+		}
 	}
 }

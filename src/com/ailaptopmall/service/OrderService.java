@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ailaptopmall.entity.Customer;
 import com.ailaptopmall.entity.Order;
+import com.ailaptopmall.entity.OrderStatusLog;
 import com.ailaptopmall.exception.AILMException;
 
 public class OrderService {
@@ -42,4 +43,9 @@ public class OrderService {
 
 	        dao.updateStatusToTransfered(member.getAccount(),Integer.parseInt(orderId), paymentNote.toString());
 	    }
+	
+	public List<OrderStatusLog> getOrderStatusLog(String orderId)// 記得要import OrderStatusLog
+			throws AILMException {
+		return dao.selectOrderStatusLog(orderId);
+	}
 }

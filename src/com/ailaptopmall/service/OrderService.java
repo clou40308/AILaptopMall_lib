@@ -1,5 +1,6 @@
 package com.ailaptopmall.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.ailaptopmall.entity.Customer;
@@ -28,4 +29,17 @@ public class OrderService {
 		
 		return dao.selectOrderById(member.getAccount(), orderId);
 	}
+	
+	public void updateStatusToTransfered(Customer member, String orderId, //記得要 [alt+/] import LocalDate
+	           String bank, String last5, double amount,LocalDate TransferedDate, String TransferedTime) throws AILMException {
+	        if(member==null || orderId==null || !orderId.matches("\\d+")) {
+	           throw new IllegalArgumentException("通知轉帳時，member|orderId不得為null");
+	        }
+	        StringBuilder paymentNote = new StringBuilder();
+	        paymentNote.append(bank).append(", ").append(last5);
+	        paymentNote.append(",轉帳金額:").append(amount);
+	        paymentNote.append(",轉帳時間約:").append(TransferedDate).append(" ").append(TransferedTime);
+
+	        dao.updateStatusToTransfered(member.getAccount(),Integer.parseInt(orderId), paymentNote.toString());
+	    }
 }

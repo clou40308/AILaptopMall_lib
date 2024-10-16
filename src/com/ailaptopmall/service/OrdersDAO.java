@@ -265,4 +265,26 @@ public class OrdersDAO {
 		}
 		return order;
 	}
+	
+	private static final String UPDATE_STATUS_TO_TRANSFERED = "UPDATE orders SET status=1" // 狀態設定為已轉帳
+			+ ", payment_note=? WHERE status=0 AND payment_type='" + PaymentType.ATM.name()
+			+ "' AND customer_account=? AND id=? ";
+
+	void updateStatusToTransfered(String customerAccount, int orderId, String paymentNote) throws AILMException {
+		try (Connection connection = MySQLConnection.getConnection(); // 2. 建立連線
+				PreparedStatement pstmt = connection.prepareStatement(UPDATE_STATUS_TO_TRANSFERED) // 3. 準備指令
+
+		) {
+
+			// 3.1 傳入?的值
+			pstmt.setString(1, paymentNote);
+			pstmt.setString(2, customerAccount);
+			pstmt.setInt(3, orderId);
+
+			// 4. 執行指令
+			pstmt.executeUpdate();
+		} catch (SQLException ex) {
+			throw new AILMException("[通知轉帳]失敗!", ex);
+		}
+	}
 }

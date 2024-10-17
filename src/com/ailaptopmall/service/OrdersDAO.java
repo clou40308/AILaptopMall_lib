@@ -142,10 +142,10 @@ public class OrdersDAO {
 			+ "	INNER JOIN order_items "
 			+ "	ON orders.id = order_items.order_id "
 			+ "	WHERE customer_account =? "
-			+ " AND created_date BETWEEN date_add(curdate(), INTERVAL -1 MONTH) AND curdate() "
+			+ " AND created_date BETWEEN date_add(curdate(), INTERVAL ? MONTH) AND curdate() "
 			+ " GROUP BY orders.id "
 			+ " ORDER BY created_date DESC, careted_time DESC ";
-	List<Order> selectOrdersHistory(String customerAccount) throws AILMException{
+	List<Order> selectOrdersHistory(String customerAccount, int range) throws AILMException{
 		List<Order>list = new ArrayList<>();
 		
 		try (
@@ -154,6 +154,7 @@ public class OrdersDAO {
 			){
 			//3.1 傳入?的值
 			pstmt.setString(1, customerAccount);
+			pstmt.setInt(2, -range);
 			try(
 					ResultSet rs = pstmt.executeQuery(); //4.執行指令
 				){

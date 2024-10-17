@@ -17,7 +17,7 @@ public class TestOrderService_getOrdersHistory {
 
 		try {
 			Customer member = cService.login("clou40308", "a123456");
-			List<Order> list = oService.getOrdersHistory(member);
+			List<Order> list = oService.getOrdersHistory(member,1);
 			System.out.println(list);
 		} catch (AILMException e) {
 			Logger.getLogger("").log(Level.SEVERE, e.getMessage(), e);

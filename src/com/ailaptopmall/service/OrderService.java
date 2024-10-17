@@ -16,10 +16,11 @@ public class OrderService {
 							"結帳時，訂單物件不得為null");
 		dao.insert(order);
 	}
-	public List<Order> getOrdersHistory(Customer member)throws AILMException{
-		if(member==null) throw new IllegalArgumentException(
-				"查詢歷史訂單，member物件不得為null");
-		return dao.selectOrdersHistory(member.getAccount());
+	public List<Order> getOrdersHistory(Customer member, int range) throws AILMException {
+		if (member == null)
+			throw new IllegalArgumentException("查詢歷史訂單, member物件不得為null");		
+		
+		return dao.selectOrdersHistory(member.getAccount(), range);
 	}
 	public Order getOrderById(Customer member, String orderId) throws AILMException{
 		if(member==null) throw new IllegalArgumentException(

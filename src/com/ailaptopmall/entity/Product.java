@@ -113,6 +113,13 @@ public class Product {
 	}
 
 	public int getStock() {
+		if(sizeList!=null && sizeList.size()>0) {
+			int sum = 0;
+			for(Size size:sizeList) {
+				sum = sum + size.getStock();
+			}
+			return sum;
+		}
 		return stock;
 	}
 

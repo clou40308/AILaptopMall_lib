@@ -185,7 +185,7 @@ public class ProductsDAO {
 	}
 	
 	private static final String SELECT_PRODUCT_BY_ID =
-			"SELECT id, name, products.unit_price,  products.stock AS stock, "
+			"SELECT id, name, products.unit_price,  IFNULL(SUM(product_size_specs.stock),products.stock) AS stock, "
 			+ " products.photo_url, category, maker, description, products.release_date, discount , "
 			+ " product_sizes.product_id, product_sizes.size_name, "
 			+ " IFNULL(product_sizes.release_date,products.release_date) AS size_release_date, "

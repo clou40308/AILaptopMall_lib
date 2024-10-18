@@ -102,6 +102,20 @@ public class ShoppingCart {
 		return Math.round(sum); //回傳前用Math.round(sum)、Math.floor(sum)、Math.ceil(sum)來處理小數資料
 	}
 	
+	public String getCartProduct() { 
+	    StringBuilder nameBuilder = new StringBuilder();
+	    Set<CartItem> keySet = cart.keySet();
+	    
+	    for (CartItem item : keySet) {
+	        nameBuilder.append(item.getProductName()).append(" ");
+	        nameBuilder.append(item.getSizeName()).append(" ");
+	        nameBuilder.append(item.getSpecName()).append(" ");
+	        nameBuilder.append(cart.get(item)).append("\n");  // 使用 item 來取數量
+	    }
+
+	    return nameBuilder.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return "ShoppingCart [訂購人=" + member 

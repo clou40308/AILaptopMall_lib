@@ -318,4 +318,33 @@ public class OrdersDAO {
 			throw new AILMException("查詢訂單狀態Log失敗", ex);
 		}
 	}
+	
+	private static final String UPDATE_STATUS_TO_PAID = "UPDATE orders"
+	          + " SET status=2"   //狀態設定為已付款
+	            + ", payment_note=? WHERE customer_id=? AND id=?"
+	            + " AND status=0" + " AND payment_type='" + PaymentType.CARD.name() + "'";
+	   /**
+	    * 紀錄信用卡付款相關資料
+	    * @param customerId: 訂購人
+	    * @param orderId: 訂單編號
+	    * @param paymentNote: 紀錄信用卡付款相關資料(信用卡號，有效年月、授權碼等)
+	    * @throws VGBException
+	    */
+	    void updateOrderStatusToPAID(String customerId, int orderId, String paymentNote) throws AILMException {
+	        try (Connection connection = MySQLConnection.getConnection(); //2. 建立連線
+	             PreparedStatement pstmt = connection.prepareStatement(UPDATE_STATUS_TO_PAID) //3. 準備指令
+	        ) { 
+
+	            //3.1 傳入?的值
+	            pstmt.setString(1, paymentNote);
+	            pstmt.setString(2, customerId);
+	            pstmt.setInt(3, orderId);
+
+	            //4. 執行指令
+	            pstmt.executeUpdate();
+	        } catch (SQLException ex) {
+	            System.out.println("修改信用卡付款入帳狀態失敗-" + ex);
+	            throw new AILMException("修改信用卡付款入帳狀態失敗!", ex);
+	        }
+	    }
 }

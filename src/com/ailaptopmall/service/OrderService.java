@@ -61,6 +61,6 @@ public class OrderService {
 	      System.out.println("orderId = " + orderId);
 	      System.out.println("customerId = " + member.getId());
 	      System.out.println("paymentNote = " + paymentNote);
-	      dao.updateOrderStatusToPAID(member.getId(), Integer.parseInt(orderId), paymentNote.toString());
+	      dao.updateOrderStatusToPAID(member.getAccount(), Integer.parseInt(orderId), paymentNote.toString());
 	}
 }

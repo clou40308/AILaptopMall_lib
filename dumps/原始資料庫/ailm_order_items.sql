@@ -26,7 +26,7 @@ CREATE TABLE `order_items` (
   `order_id` int NOT NULL,
   `product_id` int NOT NULL,
   `size_name` varchar(25) NOT NULL,
-  `spec_name` varchar(25) NOT NULL,
+  `spec_name` varchar(50) NOT NULL,
   `price` double NOT NULL,
   `quantity` int NOT NULL,
   PRIMARY KEY (`order_id`,`product_id`,`size_name`,`spec_name`),
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-21 14:04:47
+-- Dump completed on 2024-10-22 13:55:21
